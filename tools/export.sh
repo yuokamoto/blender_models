@@ -73,8 +73,10 @@ blender_path=${blender_path:-$default_blender_path}
 # ソースBlenderファイルパスが指定されていない場合はデフォルト値を使用
 src_blender_file=${src_blender_file:-$default_src_blender_file}
 
-# ターゲットFBXファイルパスが指定されていない場合はデフォルト値を使用
-target_fbx=${target_fbx:-$default_target_fbx}
+# target_fbx が指定されていない場合は source_blender_file の拡張子を .fbx に変更したものを使用
+if [ -z "$target_fbx" ]; then
+    target_fbx="${src_blender_file%.*}.fbx"
+fi
 
 # Pythonスクリプトのパスが指定されていない場合はデフォルト値を使用
 python_script=${python_script:-$default_python_script}
