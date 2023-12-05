@@ -14,7 +14,7 @@ function show_help {
 }
 
 # デフォルトのBlenderパスを設定
-default_blender_path=${BLENDER_PATH:-"blender"}
+default_blender_path=${BLENDER_PATH:-$(which blender)}
 
 # デフォルトのソースBlenderファイルとターゲットFBXファイルを設定
 default_src_blender_file="source.blend"
