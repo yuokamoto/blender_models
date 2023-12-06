@@ -5,6 +5,8 @@ import sys
 argv = sys.argv[sys.argv.index("--") + 1:]
 target = argv[0]
 
+boolean_objs = set()
+
 def create_single_copy():
     scene = bpy.context.scene
     data_links = defaultdict(list)
@@ -16,8 +18,6 @@ def create_single_copy():
     # make a single user copy
     for k, v in data_links.items():
         if len(v) > 1:
-            print(k, len(v))
-
             # get the original obj
             original_obj = v[0]
             new_mesh = original_obj.data.copy()
@@ -43,6 +43,9 @@ def create_single_copy():
             break
 
 def apply_modifiers(obj):
+    if not obj:
+        return
+        
     print('apply_modifiers: ', obj.name)
     boolean_obj = None
     bpy.context.view_layer.objects.active = obj
@@ -91,14 +94,16 @@ def applyModifierToMultiUser():
 
 create_single_copy()
 
-objects = bpy.context.scene.objects
-boolean_objs = set()
-
-for obj in objects: 
+for obj in bpy.context.scene.objects: 
     apply_modifiers(obj)
+
 
 for obj in boolean_objs:
     bpy.data.objects.remove(obj, do_unlink=True)
+
+for obj in bpy.context.scene.objects: 
+    if not obj.visible_get():
+        bpy.data.objects.remove(obj, do_unlink=True)
 
 
 bpy.ops.export_scene.fbx(filepath=target, use_selection=False)
