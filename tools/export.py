@@ -46,13 +46,21 @@ def apply_modifiers(obj):
     if not obj:
         return
         
-    print('apply_modifiers: ', obj.name)
+    print('apply_modifiers: ', obj.name, obj.type)
+
     boolean_obj = None
     bpy.context.view_layer.objects.active = obj
 
+    if obj.type == 'CURVE':
+        bpy.ops.object.select_all(action='DESELECT')
+        bpy.data.objects[obj.name].select_set(True)
+        bpy.ops.object.convert(target='MESH')
+        bpy.ops.object.select_all(action='DESELECT')
+
+
     for mod in obj.modifiers:
         boolean_obj = None
-        print('  modifier', mod)
+        print('  modifier', mod, mod.type)
         
         if mod.type == 'BOOLEAN':
             boolean_obj = mod.object
@@ -61,36 +69,6 @@ def apply_modifiers(obj):
             bpy.context.view_layer.objects.active = obj
 
         bpy.ops.object.modifier_apply(modifier=mod.name)
-
-def applyModifierToMultiUser():
-    active = objects.active
-    if (active == None):
-        print("Select an object")
-        return
-    if (active.type != "MESH"):
-        print("Select an mesh object")
-        return
-    mesh = active.to_mesh(bpy.context.scene, True, 'PREVIEW')
-    linked = []
-    selected = []
-    for obj in bpy.data.objects:
-        if obj.data == active.data:
-                linked.append(obj)
-    for obj in bpy.context.selected_editable_objects:
-        selected.append(obj)
-        obj.select = False
-
-    for obj in linked:
-        obj.select = True
-        obj.modifiers.clear() 
-    active.data = mesh
-    bpy.ops.object.make_links_data(type='OBDATA')
-
-    for obj in linked:
-        obj.select = False
-    for obj in selected:
-        obj.select = True
-
 
 create_single_copy()
 
