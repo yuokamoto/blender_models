@@ -5,6 +5,8 @@ import sys
 argv = sys.argv[sys.argv.index("--") + 1:]
 target = argv[0]
 
+bpy.ops.object.mode_set(mode="OBJECT")
+
 boolean_objs = set()
 
 def create_single_copy():
